@@ -1,0 +1,21 @@
+"A attempt for PSO"
+
+include "cos.cat"
+
+(* Uniproc check specialized for TSO *)
+irreflexive po-loc & (R*W); rfi as uniprocRW
+irreflexive po-loc & (W*R); fri as uniprocWR
+
+(* Communication relations that order events*)
+let com-pso = rfe | co | fr
+
+(* Program order that orders events *)
+let mfence = po & (_ * MFENCE) ; po
+let po-pso = po & (R*M) | mfence
+
+(* TSP global-happens-before *)
+let ghb = po-pso | com-pso
+show mfence,ghb
+acyclic ghb as pso
+
+
