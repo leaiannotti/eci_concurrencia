@@ -1,8 +1,8 @@
-X86 SB
-"Fre PodWR Fre PodWR"
-{ x=0; y=0; }
- P0          | P1          ; 
- MOV EAX,[y] | MOV EAX,[x]  ;
- MOV [x],EAX | MOV [y],EAX ;
-locations [x;y;]
-exists (0:EAX=1 /\ 1:EAX=1)
+PPC TAR
+"PodRW Rfe PodRW Rfe"
+Cycle=Rfe PodRW Rfe PodRW
+{ 0:r2=x; 0:r4=y; 1:r2=y; 1:r4=x; }
+ P0           | P1           ;
+ lwz r1,0(r4) | lwz r1,0(r4) ;
+ stw r1,0(r2) | stw r1,0(r2) ;
+exists (0:r1=1 /\ 1:r1=1)
