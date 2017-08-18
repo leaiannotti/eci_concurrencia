@@ -13,7 +13,7 @@ int *TURN;
 int *FLAG_0;
 int *FLAG_1;
 
-void rel_mutex(int i)
+void get_out_of_critical(int i)
 {
    if(i==0){
       *TURN=1;
@@ -26,55 +26,44 @@ void rel_mutex(int i)
 
 }
 
-
-void get_mutex(int i)
+void get_in_critical(int i)
 {
-
    if(i==0){
       *FLAG_0=1;
-      while(*FLAG_1==1){
+      while(*FLAG_1!=0){
            if(*TURN==1){
             *FLAG_0 = 0;
             while(*TURN==1){}
-            *FLAG_0=1;
+         *FLAG_0=1;
          }
       }
    }
-   else{
-      *FLAG_1=1;
-      while (*FLAG_0==1){
+   if(i==1){
+   *FLAG_1=1;
+   while (*FLAG_0!=0){
          if(*TURN==0){
             *FLAG_1 = 0;
             while(*TURN==0){}
-            *FLAG_1=1;
+         *FLAG_1=1;
          }
       }
    }
+
 }
-
-
-
-
 
 void process(int i)
 {
-   for(int k=1;k<=10;k++){
-       get_mutex(i);
-       for(int m=1;m<=10;m++){
-           cout<<"Proceso: "<<i<<". Numero: "<<k<<" ("<<m<<"/10)"<<endl;
-         }
-      rel_mutex(i);
+   for(int k=1;k<=50;k++){
+       cout<<"Proceso - "<<i<<endl;
+       get_in_critical(i);
+       for(int m=1;m<=5;m++){
+           cout<<"Proceso: "<<i<<". Numero: "<<k<<" ("<<m<<"/5)"<<endl;
+                   //sleep(1);
+      }
+      get_out_of_critical(i);
    }
 }
 
-
-/*
- System.out.println("Running: "+tid);
-            for (int s = 0; s < PASOS; s++) {
-              m.getMutex(tid);
-              c.increment();
-              m.relMutex(tid);
-            }*/
 
 void del(int sig)
 {
