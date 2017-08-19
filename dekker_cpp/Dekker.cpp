@@ -124,7 +124,8 @@ int main()
    
    sigset(SIGINT, del);
 
-   pid_t pid = fork();
+   // OS X
+   pid_t pid = fork(); 
 
    if (pid == 0) {
       process(0);
@@ -139,9 +140,36 @@ int main()
       cout<<"TERMINA: 1"<<endl;
       exit(0);
    }
-	wait(&pid2);
-   	wait(&pid);
+   wait(&pid2);
+   wait(&pid);
    del(0);
+
+//   Linux
+//
+//   if (fork() == 0) {
+//      process(0);
+//      exit(0);
+//   }
+//   
+//   if (fork() == 0) {
+//      process(1);
+//      exit(0);
+//   }
+//   wait();
+//   wait();
+//   del(0);
 
    return 0;
 }
+
+// Por que funcionó este algoritmo y no el anterior?
+//
+// Al principio copiamos la implementación de Dekker que no andaba.
+// Probamos con cambiar la variable TURN a volatil como lo habíamos hecho en JAVA
+// pero teníamos el mismo comportamiento. Luego cambiamos las variables de FLAG y TURN
+// a atómicas y le asignamos el tipo de orden de memoria como SC al load y store de cada una de ellas. 
+// Esto permite setear y obtener las variables de forma atomica y respetando el modelo de SC. 
+// Luego nos dimos cuenta que no funcionaba al querer correr los dos procesos, buscamos en internet y
+// lo solucionamos cambiando la forma de obtener la  memoria para las variables (asignamos partes de memoria
+// diferentes a cada una de las variables y no al mismo bloque de memoria como estabamos haciendo)
+// y  el algoritmo funciono exitosamente.
